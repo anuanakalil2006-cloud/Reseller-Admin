@@ -1,0 +1,467 @@
+
+<h2 class="sr-only">Reseller Admin</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body,div,span,p,h1,h2,h3,input,button,select,textarea,td,th,label{font-family:var(--font-sans)}
+.shell{display:flex;min-height:760px;background:var(--color-background-tertiary)}
+.side{width:210px;flex-shrink:0;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column}
+.logo-area{padding:18px 16px 14px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.logo-row{display:flex;align-items:center;gap:9px}
+.logo-sq{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.biz-name{font-size:13px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.owner-badge{font-size:10px;color:var(--color-text-tertiary);margin-top:1px}
+.snav{padding:10px 10px;flex:1}
+.snav-label{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.7px;padding:0 6px;margin-bottom:5px;text-transform:uppercase}
+.nitem{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:var(--border-radius-md);cursor:pointer;font-size:12px;color:var(--color-text-secondary);margin-bottom:1px;transition:background .12s}
+.nitem:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.nitem.act{background:#1a1a2e;color:#d4b8ff}
+.nitem svg{width:14px;height:14px;flex-shrink:0}
+.owner-card{margin:10px;padding:10px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.oc-label{font-size:10px;color:var(--color-text-tertiary);margin-bottom:4px}
+.oc-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.oc-role{font-size:11px;color:var(--color-text-tertiary)}
+.oc-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;margin-bottom:8px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:50px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1}
+.tb-pill{font-size:11px;padding:3px 9px;border-radius:99px;background:#e9d5ff;color:#5b21b6;font-weight:500}
+.save-btn{padding:6px 14px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;border:none;color:#fff;transition:opacity .15s}
+.save-btn:hover{opacity:.88}
+.content{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.section-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.sec-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:500;color:var(--color-text-secondary)}
+.field input,.field select,.field textarea{font-size:12px;padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);outline:none;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 2px rgba(124,58,237,.15)}
+.color-row{display:flex;align-items:center;gap:10px}
+.color-swatch{width:32px;height:32px;border-radius:6px;border:0.5px solid var(--color-border-secondary);cursor:pointer;flex-shrink:0}
+.metrics-edit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.metric-edit-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;border:0.5px solid var(--color-border-tertiary)}
+.me-label{font-size:10px;color:var(--color-text-tertiary);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.me-val{font-size:20px;font-weight:500;color:var(--color-text-primary);font-family:var(--font-mono);letter-spacing:-0.5px}
+.me-delta{font-size:11px;margin-top:4px}
+.me-delta.up{color:#16a34a}
+.me-delta.dn{color:#dc2626}
+.me-input{width:100%;font-size:13px;font-weight:500;border:0.5px dashed var(--color-border-secondary);border-radius:5px;padding:2px 5px;background:transparent;color:var(--color-text-primary);font-family:var(--font-mono)}
+.me-input:focus{outline:none;border-color:#7c3aed;background:var(--color-background-primary)}
+.user-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+.user-table th{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.5px;padding-bottom:8px;text-align:left;border-bottom:0.5px solid var(--color-border-tertiary)}
+.user-table td{padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+.user-table tr:last-child td{border-bottom:none}
+.uav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0}
+.ucell{display:flex;align-items:center;gap:7px}
+.role-sel{font-size:11px;padding:2px 6px;border-radius:4px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary)}
+.status-tog{width:32px;height:18px;border-radius:99px;cursor:pointer;position:relative;border:none;transition:background .2s;flex-shrink:0}
+.status-tog::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s}
+.status-tog.on{background:#16a34a}
+.status-tog.off{background:#d1d5db}
+.status-tog.on::after{transform:translateX(14px)}
+.del-btn{width:24px;height:24px;border-radius:5px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-text-tertiary);font-size:14px;transition:all .15s}
+.del-btn:hover{background:#fee2e2;border-color:#fca5a5;color:#b91c1c}
+.add-btn{font-size:12px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px dashed var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);margin-top:10px}
+.add-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.toast{position:absolute;bottom:16px;right:16px;padding:9px 14px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;color:#fff;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prod-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;background:var(--color-background-secondary);position:relative}
+.prod-img{width:100%;height:60px;border-radius:5px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:22px}
+.prod-name-in{font-size:12px;font-weight:500;border:none;background:transparent;color:var(--color-text-primary);width:100%;padding:0;margin-bottom:3px}
+.prod-name-in:focus{outline:none;border-bottom:1px solid #7c3aed}
+.prod-price-in{font-size:12px;font-family:var(--font-mono);border:none;background:transparent;color:var(--color-text-secondary);width:100%;padding:0}
+.prod-price-in:focus{outline:none;border-bottom:1px solid #7c3aed}
+.prod-status{position:absolute;top:8px;right:8px;font-size:10px;padding:2px 6px;border-radius:99px}
+.prod-status.live{background:#dcfce7;color:#166534}
+.prod-status.draft{background:#f3f4f6;color:#6b7280}
+</style>
+
+<div class="shell" style="position:relative">
+  <aside class="side">
+    <div class="logo-area">
+      <div class="logo-row">
+        <div class="logo-sq" id="logoSq" style="background:#7c3aed">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="rgba(255,255,255,.9)"/><rect x="9" y="2" width="5" height="5" rx="1" fill="rgba(255,255,255,.6)"/><rect x="2" y="9" width="5" height="5" rx="1" fill="rgba(255,255,255,.6)"/><rect x="9" y="9" width="5" height="5" rx="1" fill="rgba(255,255,255,.35)"/></svg>
+        </div>
+        <div>
+          <div class="biz-name" id="sidebarBizName">My Business</div>
+          <div class="owner-badge">Admin Panel</div>
+        </div>
+      </div>
+    </div>
+    <nav class="snav">
+      <div class="snav-label">Pages</div>
+      <div class="nitem act" onclick="switchPage('dashboard',this)">
+        <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" fill="currentColor"/><rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor" opacity=".5"/><rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor" opacity=".5"/><rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor" opacity=".3"/></svg>
+        Dashboard
+      </div>
+      <div class="nitem" onclick="switchPage('metrics',this)">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M1 11L4 6l2.5 3L9 3l4 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Metrics
+      </div>
+      <div class="nitem" onclick="switchPage('users',this)">
+        <svg viewBox="0 0 14 14" fill="none"><circle cx="5.5" cy="4" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M1 12c.4-2 2.3-3 4.5-3s4.1 1 4.5 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="11" cy="5" r="1.5" stroke="currentColor" stroke-width="1" fill="none"/><path d="M13 11c-.3-1.3-1.2-2-2.5-2" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none"/></svg>
+        Users
+      </div>
+      <div class="nitem" onclick="switchPage('products',this)">
+        <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M5 5h4M5 7h3M5 9h2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+        Products
+      </div>
+      <div class="nitem" onclick="switchPage('settings',this)">
+        <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2M3.05 3.05l1.42 1.42M9.53 9.53l1.42 1.42M9.53 4.47l-1.42 1.42M4.97 9.03l-1.42 1.42" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none"/></svg>
+        Settings
+      </div>
+    </nav>
+    <div class="owner-card">
+      <div class="oc-label">Owner</div>
+      <div class="oc-av" id="ownerAvatar" style="background:#ede9fe;color:#5b21b6">YO</div>
+      <div class="oc-name" id="ownerNameDisplay">You</div>
+      <div class="oc-role">Super Admin · Owner</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="topbarTitle">Dashboard</div>
+      <div class="tb-pill" id="ownerPill">Owner</div>
+      <button class="save-btn" id="saveBtn" style="background:#7c3aed" onclick="saveChanges()">Save changes</button>
+    </div>
+
+    <div class="content">
+
+      <div id="page-dashboard">
+        <div class="section-card">
+          <div class="sec-head">
+            <div><div class="sec-title">Business identity</div><div class="sec-sub">Shown across your panel</div></div>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label>Business name</label>
+              <input type="text" id="bizName" value="My Business" oninput="syncBizName(this.value)" placeholder="Your business name"/>
+            </div>
+            <div class="field">
+              <label>Your name</label>
+              <input type="text" id="ownerName" value="You" oninput="syncOwnerName(this.value)" placeholder="Owner name"/>
+            </div>
+            <div class="field">
+              <label>Industry</label>
+              <select id="industry">
+                <option>E-commerce</option>
+                <option>SaaS</option>
+                <option>Services</option>
+                <option>Healthcare</option>
+                <option>Education</option>
+                <option>Finance</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Currency</label>
+              <select id="currency" onchange="syncCurrency()">
+                <option value="$">USD ($)</option>
+                <option value="€">EUR (€)</option>
+                <option value="£">GBP (£)</option>
+                <option value="₹">INR (₹)</option>
+                <option value="¥">JPY (¥)</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label>Brand color</label>
+              <div class="color-row">
+                <div class="color-swatch" id="colorSwatch" style="background:#7c3aed" onclick="document.getElementById('colorPicker').click()"></div>
+                <input type="color" id="colorPicker" value="#7c3aed" style="opacity:0;width:0;height:0;position:absolute" oninput="syncColor(this.value)"/>
+                <input type="text" id="colorHex" value="#7c3aed" style="font-family:var(--font-mono);font-size:12px;width:90px" oninput="syncColorHex(this.value)"/>
+                <span style="font-size:11px;color:var(--color-text-tertiary)">Click swatch to pick</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <div><div class="sec-title">Key metrics</div><div class="sec-sub">Click any value to edit</div></div>
+          </div>
+          <div class="metrics-edit-grid">
+            <div class="metric-edit-card">
+              <div class="me-label">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 9L3.5 5l2 2.5L8 3l3 4.5H1z" fill="#7c3aed"/></svg>
+                Revenue
+              </div>
+              <input class="me-input" id="metRevenue" value="84,290" style="font-size:18px"/>
+              <div class="me-delta up">+12.4% this month</div>
+            </div>
+            <div class="metric-edit-card">
+              <div class="me-label">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="5" cy="4" r="2.2" stroke="#0284c7" stroke-width="1.1" fill="none"/><path d="M1 10c.4-1.8 2-2.7 4-2.7s3.6.9 4 2.7H1z" fill="#0284c7"/></svg>
+                Active users
+              </div>
+              <input class="me-input" id="metUsers" value="12,845" style="font-size:18px"/>
+              <div class="me-delta up">+8.1% this month</div>
+            </div>
+            <div class="metric-edit-card">
+              <div class="me-label">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="10" height="7" rx="1" stroke="#d97706" stroke-width="1.1" fill="none"/><path d="M4 3V2a2 2 0 014 0v1" stroke="#d97706" stroke-width="1.1" fill="none"/></svg>
+                Orders
+              </div>
+              <input class="me-input" id="metOrders" value="3,218" style="font-size:18px"/>
+              <div class="me-delta up">+5.7% this month</div>
+            </div>
+            <div class="metric-edit-card">
+              <div class="me-label">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 8l1.5-1.5 2 2 4-5" stroke="#16a34a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                Conversion
+              </div>
+              <input class="me-input" id="metConv" value="3.62%" style="font-size:18px"/>
+              <div class="me-delta dn">-0.4% this month</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <div><div class="sec-title">Revenue chart</div><div class="sec-sub">Edit monthly targets</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:12px" id="chartInputs">
+          </div>
+          <div style="position:relative;width:100%;height:180px">
+            <canvas id="revChart" role="img" aria-label="Editable monthly revenue bar chart">Monthly revenue chart</canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-metrics" style="display:none">
+        <div class="section-card">
+          <div class="sec-head"><div><div class="sec-title">Edit all metrics</div><div class="sec-sub">Full control over your numbers</div></div></div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+              <div class="field"><label>Monthly revenue target</label><input type="text" id="m_revtarget" value="90,000"/></div>
+              <div class="field"><label>Last month revenue</label><input type="text" id="m_lastrev" value="74,820"/></div>
+              <div class="field"><label>New signups this month</label><input type="text" id="m_signups" value="1,240"/></div>
+              <div class="field"><label>Churn rate</label><input type="text" id="m_churn" value="2.1%"/></div>
+              <div class="field"><label>Avg order value</label><input type="text" id="m_aov" value="$26.20"/></div>
+              <div class="field"><label>Refund rate</label><input type="text" id="m_refund" value="0.8%"/></div>
+              <div class="field"><label>Customer LTV</label><input type="text" id="m_ltv" value="$310"/></div>
+              <div class="field"><label>Support tickets open</label><input type="text" id="m_tickets" value="14"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-users" style="display:none">
+        <div class="section-card">
+          <div class="sec-head">
+            <div><div class="sec-title">User management</div><div class="sec-sub">Add, edit, remove team members</div></div>
+            <button class="add-btn" onclick="addUser()">+ Add user</button>
+          </div>
+          <table class="user-table" id="userTable">
+            <thead><tr>
+              <th style="width:34%">Name</th>
+              <th style="width:22%">Role</th>
+              <th style="width:22%">Status</th>
+              <th style="width:22%">Actions</th>
+            </tr></thead>
+            <tbody id="userTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-products" style="display:none">
+        <div class="section-card">
+          <div class="sec-head">
+            <div><div class="sec-title">Products</div><div class="sec-sub">Edit names, prices, status</div></div>
+            <button class="add-btn" onclick="addProduct()">+ Add product</button>
+          </div>
+          <div class="product-grid" id="productGrid"></div>
+        </div>
+      </div>
+
+      <div id="page-settings" style="display:none">
+        <div class="section-card">
+          <div class="sec-head"><div><div class="sec-title">Panel settings</div><div class="sec-sub">Notifications & preferences</div></div></div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Email notifications</div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:2px">Get alerts for orders & signups</div></div>
+              <button class="status-tog on" id="tog1" onclick="toggleSetting(this)"></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Daily report digest</div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:2px">Summary email every morning</div></div>
+              <button class="status-tog on" id="tog2" onclick="toggleSetting(this)"></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Two-factor authentication</div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:2px">Extra security for your account</div></div>
+              <button class="status-tog off" id="tog3" onclick="toggleSetting(this)"></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Public profile</div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:2px">Make your store visible</div></div>
+              <button class="status-tog on" id="tog4" onclick="toggleSetting(this)"></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0">
+              <div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Maintenance mode</div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:2px">Temporarily hide your store</div></div>
+              <button class="status-tog off" id="tog5" onclick="toggleSetting(this)"></button>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="sec-head"><div><div class="sec-title">Danger zone</div><div class="sec-sub">Irreversible actions</div></div></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button style="font-size:12px;padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid #fca5a5;background:#fff7f7;color:#b91c1c;cursor:pointer" onclick="showToast('Data export started — check your email','#16a34a')">Export all data</button>
+            <button style="font-size:12px;padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid #fca5a5;background:#fff7f7;color:#b91c1c;cursor:pointer" onclick="showToast('Cache cleared successfully','#16a34a')">Clear cache</button>
+            <button style="font-size:12px;padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid #fca5a5;background:#fee2e2;color:#7f1d1d;cursor:pointer" onclick="showToast('Reset cancelled — confirm in settings','#dc2626')">Reset panel</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let brandColor = '#7c3aed';
+let currencySymbol = '$';
+let revChart = null;
+let revData = [14200,18400,22100,17300,19800,21400,23600];
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
+
+const users = [
+  {id:1,name:'You',role:'Owner',status:true,av:'YO',bg:'#ede9fe',tc:'#5b21b6'},
+  {id:2,name:'Sarah M.',role:'Admin',status:true,av:'SM',bg:'#e0f2fe',tc:'#0369a1'},
+  {id:3,name:'Raj K.',role:'Editor',status:true,av:'RK',bg:'#dcfce7',tc:'#15803d'},
+  {id:4,name:'Lena T.',role:'Viewer',status:false,av:'LT',bg:'#fef9c3',tc:'#a16207'},
+];
+
+const products = [
+  {id:1,name:'Pro Plan',price:'$29/mo',icon:'S',bg:'#ede9fe',status:'live'},
+  {id:2,name:'Starter Kit',price:'$9.99',icon:'K',bg:'#e0f2fe',status:'live'},
+  {id:3,name:'Enterprise',price:'$99/mo',icon:'E',bg:'#dcfce7',status:'draft'},
+  {id:4,name:'Add-on Pack',price:'$4.99',icon:'A',bg:'#fef9c3',status:'live'},
+  {id:5,name:'Annual Bundle',price:'$199/yr',icon:'B',bg:'#fce7f3',status:'draft'},
+  {id:6,name:'New Product',price:'$0.00',icon:'N',bg:'#f3f4f6',status:'draft'},
+];
+
+function syncBizName(v){
+  document.getElementById('sidebarBizName').textContent = v||'My Business';
+}
+function syncOwnerName(v){
+  const n = v||'You';
+  document.getElementById('ownerNameDisplay').textContent = n;
+  const init = n.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'YO';
+  document.getElementById('ownerAvatar').textContent = init;
+  if(users[0]) users[0].name = n, users[0].av = init, renderUsers();
+}
+function syncCurrency(){
+  currencySymbol = document.getElementById('currency').value;
+}
+function syncColor(v){
+  brandColor = v;
+  document.getElementById('colorSwatch').style.background = v;
+  document.getElementById('colorHex').value = v;
+  document.getElementById('logoSq').style.background = v;
+  document.getElementById('saveBtn').style.background = v;
+  if(revChart){revChart.data.datasets[0].backgroundColor = v; revChart.update();}
+}
+function syncColorHex(v){
+  if(/^#[0-9a-fA-F]{6}$/.test(v)){
+    document.getElementById('colorPicker').value = v;
+    syncColor(v);
+  }
+}
+
+function buildChartInputs(){
+  const el = document.getElementById('chartInputs');
+  el.innerHTML = '';
+  months.forEach((m,i)=>{
+    const d = document.createElement('div');
+    d.style.cssText='display:flex;flex-direction:column;gap:3px;align-items:center';
+    d.innerHTML = `<span style="font-size:10px;color:var(--color-text-tertiary)">${m}</span><input type="number" value="${revData[i]}" style="width:100%;font-size:11px;padding:4px 5px;border-radius:5px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);text-align:center;font-family:var(--font-mono)" oninput="updateRevData(${i},this.value)"/>`;
+    el.appendChild(d);
+  });
+}
+function updateRevData(i,v){
+  revData[i] = parseInt(v)||0;
+  if(revChart){revChart.data.datasets[0].data=[...revData];revChart.update();}
+}
+function buildChart(){
+  const ctx = document.getElementById('revChart');
+  revChart = new Chart(ctx,{
+    type:'bar',
+    data:{labels:months,datasets:[{label:'Revenue',data:[...revData],backgroundColor:brandColor,borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888'}},y:{grid:{color:'rgba(128,128,128,.08)'},ticks:{font:{size:10},color:'#888',callback:v=>currencySymbol+(v/1000).toFixed(0)+'k'},border:{display:false}}}}
+  });
+}
+
+function renderUsers(){
+  const tb = document.getElementById('userTbody');
+  tb.innerHTML = '';
+  users.forEach((u,i)=>{
+    const tr = document.createElement('tr');
+    const isOwner = i===0;
+    tr.innerHTML = `<td><div class="ucell"><div class="uav" style="background:${u.bg};color:${u.tc}">${u.av}</div><span style="font-size:12px">${u.name}</span></div></td>
+    <td><select class="role-sel" onchange="users[${i}].role=this.value" ${isOwner?'disabled':''}>
+      ${['Owner','Admin','Editor','Viewer'].map(r=>`<option${u.role===r?' selected':''}>${r}</option>`).join('')}
+    </select></td>
+    <td><button class="status-tog ${u.status?'on':'off'}" onclick="users[${i}].status=!users[${i}].status;renderUsers()" ${isOwner?'disabled style="opacity:.4;cursor:default"':''}></button></td>
+    <td><button class="del-btn" onclick="deleteUser(${i})" ${isOwner?'disabled style="opacity:.2;cursor:default"':''}><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8M5 3V2h2v1M4 3v6h4V3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></td>`;
+    tb.appendChild(tr);
+  });
+}
+function deleteUser(i){if(i===0)return;users.splice(i,1);renderUsers();showToast('User removed','#dc2626');}
+function addUser(){
+  const names=['Alex B.','Morgan L.','Casey N.','Jordan W.'];
+  const bgs=['#ede9fe','#e0f2fe','#dcfce7','#fef9c3'];
+  const tcs=['#5b21b6','#0369a1','#15803d','#a16207'];
+  const idx=users.length%4;
+  const n=names[idx];
+  users.push({id:Date.now(),name:n,role:'Viewer',status:false,av:n.split(' ').map(w=>w[0]).join('').toUpperCase(),bg:bgs[idx],tc:tcs[idx]});
+  renderUsers();showToast('User added','#16a34a');
+}
+
+function renderProducts(){
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+  products.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className='prod-card';
+    div.innerHTML = `<span class="prod-status ${p.status}" onclick="products[${i}].status=products[${i}].status==='live'?'draft':'live';renderProducts()" style="cursor:pointer" title="Click to toggle">${p.status}</span>
+    <div class="prod-img" style="background:${p.bg}">${p.icon}</div>
+    <input class="prod-name-in" value="${p.name}" oninput="products[${i}].name=this.value"/>
+    <input class="prod-price-in" value="${p.price}" oninput="products[${i}].price=this.value"/>
+    <button class="del-btn" style="margin-top:8px" onclick="deleteProduct(${i})"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8M5 3V2h2v1M4 3v6h4V3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> remove</button>`;
+    grid.appendChild(div);
+  });
+}
+function deleteProduct(i){products.splice(i,1);renderProducts();showToast('Product removed','#dc2626');}
+function addProduct(){
+  products.push({id:Date.now(),name:'New Product',price:'$0.00',icon:'N',bg:'#f3f4f6',status:'draft'});
+  renderProducts();showToast('Product added','#16a34a');
+}
+
+function toggleSetting(btn){btn.classList.toggle('on');btn.classList.toggle('off');showToast(btn.classList.contains('on')?'Setting enabled':'Setting disabled','#7c3aed');}
+
+function switchPage(page, el){
+  document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('act'));
+  el.classList.add('act');
+  ['dashboard','metrics','users','products','settings'].forEach(p=>{
+    document.getElementById('page-'+p).style.display = p===page?'':'none';
+  });
+  const titles={dashboard:'Dashboard',metrics:'Metrics',users:'Users',products:'Products',settings:'Settings'};
+  document.getElementById('topbarTitle').textContent = titles[page];
+}
+
+function saveChanges(){showToast('Changes saved successfully','#16a34a');}
+
+function showToast(msg,color){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color||brandColor;
+  t.style.opacity = '1';
+  setTimeout(()=>t.style.opacity='0',2200);
+}
+
+buildChartInputs();
+buildChart();
+renderUsers();
+renderProducts();
+</script>
